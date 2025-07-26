@@ -1,0 +1,27 @@
+<% layout("/layouts/boilerplate") %>
+
+<body>
+  <div class="form-container">
+    <h2>Create a New Listing</h2>
+    <form method="POST" action="/listings">
+      <input name="listing[title]" placeholder="Enter title" type="text" required />
+      
+      <textarea name="listing[description]" placeholder="Enter description" required></textarea>
+      
+      <input name="listing[image]" placeholder="Enter image URL/Link" type="text" required />
+      
+      <input name="listing[price]" placeholder="Enter price" type="number" required />
+      
+      <input name="listing[country]" placeholder="Enter country" type="text" required />
+      
+      <input name="listing[location]" placeholder="Enter location" type="text" required />
+      
+      <button type="submit">Add</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    LUXORA-BNB Private Limited <br />
+    <a href="#">Privacy</a> | <a href="#">Terms</a>
+  </div>
+</body>

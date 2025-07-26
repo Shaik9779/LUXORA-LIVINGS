@@ -1,0 +1,90 @@
+<% layout("layouts/boilerplate") %>
+
+<h2>Listing Details :</h2>
+<ul>
+  <li><strong>Title:</strong> <%= listing.title %></li>
+  <li><strong>Description:</strong> <%= listing.description %></li>
+  <li><strong>Location:</strong> <%= listing.location %></li>
+  <li><strong>Country:</strong> <%= listing.country %></li>
+</ul>
+
+<!-- ✅ Image Display with Price Overlay -->
+<% if (listing.image) { %>
+  <div style="position: relative; display: inline-block; margin-top: 20px;">
+    <!-- Image -->
+    <img src="<%= listing.image %>" alt="<%= listing.title %>" width="500" style="border-radius: 10px;" />
+
+    <!-- Price Overlay -->
+    <div style="
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+    ">
+      ₹<%= listing.price %> / night
+    </div>
+  </div>
+<% } else { %>
+  <p><strong>No image available for this listing.</strong></p>
+<% } %>
+
+<!-- ✅ Action Buttons -->
+<p>
+  <a href="/listings/<%= listing._id %>/edit">Edit this Listing</a>
+</p>
+
+<form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+  <button style="border: 1px solid black;">Delete this listing</button>
+</form>
+
+<hr>
+
+<!-- Add Review Form -->
+<div class="review-form-container">
+  <h3>Add a Review</h3>
+  <form method="POST" action="/listings/<%= listing._id %>/reviews">
+    <div class="form-group">
+      <label for="rating">Rating:</label>
+      <select name="review[rating]" id="rating" required>
+        <option value="5">★★★★★ (5 stars)</option>
+        <option value="4">★★★★☆ (4 stars)</option>
+        <option value="3">★★★☆☆ (3 stars)</option>
+        <option value="2">★★☆☆☆ (2 stars)</option>
+        <option value="1">★☆☆☆☆ (1 star)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="comment">Comment:</label>
+      <textarea name="review[comment]" id="comment" rows="4" required></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit">Submit Review</button>
+  </form>
+</div>
+
+<!-- Display Reviews -->
+<div class="review-section">
+  <h3>Reviews</h3>
+
+  <% if (listing.reviews && listing.reviews.length > 0) { %>
+    <% listing.reviews.forEach(review => { %>
+      <div class="review-box">
+        <div class="review-top">
+          <strong>⭐ <%= review.rating %>/5</strong>
+          <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" style="display: inline;">
+            <button class="btn-delete">🗑️</button>
+          </form>
+        </div>
+        <p><%= review.comment %></p>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No reviews yet. Be the first to review!</p>
+  <% } %>
+</div>
