@@ -8,17 +8,7 @@ const listingSchema = new mongoose.Schema({
   location: String,
   country: String,
   amenities: [String],
-  geometry: {
-    type: {
-      type: String,
-      enum: ['Point'],
-      required: true
-    },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      required: true
-    }
-  },
+  
   reviews: [
     {
       type: mongoose.Schema.Types.ObjectId,
