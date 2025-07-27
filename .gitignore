@@ -1,3 +1,6 @@
-.env
+CLOUD_NAME=dxcw1rd0v
+CLOUD_API_KEY=561737584883412
+CLOUD_API_SECRET=PjouMYprTzgF629oXMtIYJvNfMw
+
 node_modules/
 .env

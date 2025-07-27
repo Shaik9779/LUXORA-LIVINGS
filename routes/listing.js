@@ -3,6 +3,11 @@ const router = express.Router({ mergeParams: true });
 const Listing = require("../models/listing");
 const { isLoggedIn } = require("./middlewares");
 
+// ✅ Cloudinary and Multer setup
+const multer = require("multer");
+const { storage } = require("../cloudConfig");
+const upload = multer({ storage });
+
 // INDEX Route - Show all listings
 router.get("/", async (req, res) => {
     const allListings = await Listing.find({});
@@ -14,10 +19,19 @@ router.get("/new", isLoggedIn, (req, res) => {
     res.render("listings/new.ejs");
 });
 
-// CREATE Route - Save new listing (protected)
-router.post("/", isLoggedIn, async (req, res) => {
+// CREATE Route - Save new listing with image (protected)
+router.post("/", isLoggedIn, upload.single("image"), async (req, res) => {
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
+
+    // ✅ Save uploaded image to DB
+    if (req.file) {
+        newListing.image = {
+            url: req.file.path,
+            filename: req.file.filename
+        };
+    }
+
     await newListing.save();
     req.flash("success", "New listing created successfully!");
     res.redirect("/listings");
