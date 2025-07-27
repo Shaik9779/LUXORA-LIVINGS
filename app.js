@@ -18,7 +18,7 @@ const User = require("./models/user");
 const app = express();
 
 // ✅ MongoDB Atlas Connection
-const dbUrl = process.env.ATLASDB_URL 
+const dbUrl = process.env.MONGODB_URL; // FIXED HERE
 mongoose.connect(dbUrl)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
@@ -45,7 +45,7 @@ const sessionConfig = {
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    // secure: true, // Uncomment this if using HTTPS
+    // secure: true, // Uncomment this when using HTTPS (Render supports HTTPS)
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -95,5 +95,5 @@ app.get("/", (req, res) => {
 // ✅ Start the Server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
+  console.log(` Server running on port ${port}`);
 });
