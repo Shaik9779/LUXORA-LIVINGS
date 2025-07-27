@@ -1,4 +1,4 @@
-// Load environment variables from .env in non-production
+// Load environment variables from .env in development only
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -24,28 +24,30 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Mongo Store
+// ✅ Mongo Store for session storage
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
-    secret: "mysupersecretcode",
+    secret: process.env.SECRET || "fallbacksecret",
   },
-  touchAfter: 24 * 3600,
+  touchAfter: 24 * 3600, // time period in seconds
 });
 
 store.on("error", (err) => {
   console.log("❌ ERROR in MongoDB SESSION STORE:", err);
 });
 
-// ✅ Session & Flash Configuration
+// ✅ Session Configuration
 const sessionConfig = {
   store,
-  secret:  process.env.SECRET,
+  name: "session", // more secure name than default "connect.sid"
+  secret: process.env.SECRET || "fallbacksecret",
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    // secure: true, // enable if you have HTTPS
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
@@ -62,14 +64,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(session(sessionConfig));
 app.use(flash());
 
-// ✅ Passport.js Setup
+// ✅ Passport Configuration
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// ✅ Middleware for Flash + User
+// ✅ Flash and Current User Middleware
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
@@ -91,8 +93,8 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-// ✅Server Start
+// ✅ Server Start
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(` Server running on http://localhost:${port}`);
+  console.log(`🚀 Server running on port: ${port}`);
 });
