@@ -18,7 +18,7 @@ const User = require("./models/user");
 const app = express();
 
 // ✅ MongoDB Atlas Connection
-const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/luxora-bnb";
+const dbUrl = process.env.ATLASDB_URL 
 mongoose.connect(dbUrl)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
