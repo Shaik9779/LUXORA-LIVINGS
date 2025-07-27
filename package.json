@@ -1,12 +1,12 @@
 {
- "engines":{
-  "node":"v22.15.0"
- },
+  "engines": {
+    "node": "22.15.0"
+  },
   "name": "luxora-bnb",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "1.0.1",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
