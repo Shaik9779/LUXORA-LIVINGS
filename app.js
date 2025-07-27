@@ -21,7 +21,9 @@ const reviewRoutes = require("./routes/review");
 const userRoutes = require("./routes/user");
 
 // DB Connection
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+
+//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main()
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.log(err));
