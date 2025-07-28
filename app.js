@@ -1,3 +1,8 @@
+// Load environment variables
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -12,8 +17,8 @@ const User = require("./models/user");
 
 const app = express();
 
-// ✅ Local MongoDB URL (not Atlas)
-const dbUrl = "mongodb://127.0.0.1:27017/luxora-bnb";
+// ✅ MongoDB URL from .env
+const dbUrl = process.env.DB_URL  
 
 // ✅ Mongoose Connection
 mongoose.connect(dbUrl, {
@@ -23,11 +28,11 @@ mongoose.connect(dbUrl, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Session Store using local MongoDB
+// ✅ Session Store using Mongo Atlas
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
-    secret: "thisisasecretkey",
+    secret: process.env.SECRET || "thisisasecretkey",
   },
   touchAfter: 24 * 3600,
 });
@@ -40,11 +45,12 @@ store.on("error", (err) => {
 const sessionConfig = {
   store,
   name: "session",
-  secret: "thisisasecretkey",
+  secret: process.env.SECRET || "thisisasecretkey",
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
+    // secure: true, // enable this if using HTTPS
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -92,7 +98,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Start Server
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);
 });
